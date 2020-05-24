@@ -85,14 +85,16 @@ def search_words():
 
 
 def filter_tweets(user_name, verified, start_date, end_date):
-    query = Tweet.query.with_entities(Word.word, func.count(Word.word).label('occurrences'))\
+    query = Tweet.query\
         .join(WordsInTweet)\
+        .join(Word)\
+        .with_entities(Word.word, func.count(Word.word).label('occurrences'))
 
     if user_name:
-        query = query.filter_by(user_name=user_name)
+        query = query.filter(Tweet.user_name == user_name)
     if verified:
         verified_boolean = to_bool(verified)
-        query = query.filter_by(verified=verified_boolean)
+        query = query.filter(Tweet.verified == verified_boolean)
     if start_date:
         time_stamp = datetime.fromtimestamp(int(start_date))
         query = query.filter(Tweet.created > time_stamp)
