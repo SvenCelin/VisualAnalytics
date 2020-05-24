@@ -2,6 +2,9 @@ from fe import app, db, Tweet, Word, WordsInTweet
 import json
 import datetime
 
+import re
+
+regex = re.compile(r"[^a-zA-Z ]", re.IGNORECASE)
 
 def load_data():
     input_files =   [
@@ -16,7 +19,9 @@ def load_data():
             print(input_file)
             print(datetime.datetime.now())
             data = json.load(json_file)
-            existing_words = Word.query.all()
+            existing_words = {}
+            for old_word in Word.query.all():
+                existing_words[old_word.word] = old_word
             tweets = []
             created_words = []
             for index, tweet in enumerate(data):
@@ -30,40 +35,25 @@ def load_data():
                            created=datetime.datetime.strptime(tweet['created'], '%d-%b-%Y'),
                            verified=tweet['verified']
                            )
-                words = tweet['text'].lower()\
-                        .replace(',', '')\
-                        .replace('.', '')\
-                        .replace('!', '')\
-                        .replace('(', '')\
-                        .replace(')', '')\
-                        .replace('_', '')\
-                        .replace('-', '')\
-                        .replace('?', '')\
-                        .replace('\n', '')\
-                        .replace('/', '')\
-                        .replace('"', '')\
-                        .replace('‘', '')\
-                        .replace(':', '')\
-                        .replace('$', '')\
-                        .replace('@', '')\
-                        .replace('\'', '').split(' ')
+                lower_tweet_text = tweet['text'].lower()
+
+                words = regex.sub('', lower_tweet_text).split(' ')
                 for word in words:
                     if word.startswith('@') or 'http' in word:
                         continue
-                    existing = next((x for x in existing_words if x.word == word), None)
-                    if existing is not None:
+                    if word in existing_words:
                         existing_word_in_tweet = next((x for x in tw.words if x.word.word == word), None)
                         if existing_word_in_tweet is not None:
                             existing_word_in_tweet.count += 1
                         else:
-                            another_one = WordsInTweet(tweet=tw, word=existing, count=1)
+                            another_one = WordsInTweet(tweet=tw, word=existing_words[word], count=1)
                             tw.words.append(another_one)
                     else:
                         new_word = Word(word=word)
                         another_one = WordsInTweet(tweet=tw, word=new_word, count=1)
                         tw.words.append(another_one)
                         created_words.append(new_word)
-                        existing_words.append(new_word)
+                        existing_words[word] = new_word
                 tweets.append(tw)
                 #print(index)
             db.session.add_all(tweets)
