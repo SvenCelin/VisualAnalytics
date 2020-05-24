@@ -13,6 +13,8 @@ def load_data():
                     ]
     for input_file in input_files:
         with open(input_file) as json_file:
+            print(input_file)
+            print(datetime.datetime.now())
             data = json.load(json_file)
             existing_words = Word.query.all()
             tweets = []
@@ -38,17 +40,20 @@ def load_data():
                         .replace('-', '')\
                         .replace('?', '')\
                         .replace('\n', '')\
+                        .replace('/', '')\
                         .replace('"', '')\
                         .replace('‘', '')\
+                        .replace(':', '')\
+                        .replace('$', '')\
+                        .replace('@', '')\
                         .replace('\'', '').split(' ')
                 for word in words:
                     if word.startswith('@') or 'http' in word:
                         continue
                     existing = next((x for x in existing_words if x.word == word), None)
                     if existing is not None:
-                        existing_word_in_tweet = next((x for x in tw.words if x.word == word), None)
+                        existing_word_in_tweet = next((x for x in tw.words if x.word.word == word), None)
                         if existing_word_in_tweet is not None:
-                            # todo might not work
                             existing_word_in_tweet.count += 1
                         else:
                             another_one = WordsInTweet(tweet=tw, word=existing, count=1)
@@ -60,7 +65,7 @@ def load_data():
                         created_words.append(new_word)
                         existing_words.append(new_word)
                 tweets.append(tw)
-                print(index)
+                #print(index)
             db.session.add_all(tweets)
             db.session.add_all(created_words)
             db.session.commit()

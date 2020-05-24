@@ -2,6 +2,7 @@ import bigjson
 import json
 
 tweet_parts = 10_000
+file_count = 5
 
 with open('location_merged_unduplicated_sentiment.json', 'rb') as f:
     tweets = bigjson.load(f)
@@ -26,6 +27,8 @@ with open('location_merged_unduplicated_sentiment.json', 'rb') as f:
                 part = []
         if (index % tweet_parts) == 0:
             print(index)
+        if (file_index - 1) == file_count:
+            break
 
     with open('data-rest.json', 'w') as outfile:
         json.dump(part, outfile)

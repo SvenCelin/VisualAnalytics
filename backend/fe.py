@@ -3,6 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import request
 import json
 import time
+from datetime import datetime
+from sqlalchemy import text
+from sqlalchemy import func
+
 
 
 app = Flask(__name__)
@@ -59,17 +63,43 @@ class WordsInTweet(db.Model):
 db.create_all()
 
 
-@app.route('/search')
-def hello_world():
+def to_bool(v):
+    return v.lower() in ("true", "1")
+
+@app.route('/searchWords')
+def search_words():
     user_name = request.args.get('user_name')
-    found_tweets = Tweet.query.all()
-    found_tweets = found_tweets[0:min(len(found_tweets), 10)]
+    verified = request.args.get('verified')
+    start_date = request.args.get('from')
+    end_date = request.args.get('to')
+    count = request.args.get('maxCount')
+    found_words = filter_tweets(user_name, verified, start_date, end_date).group_by(Word.word)\
+        .order_by(text('occurrences DESC'))\
+        .limit(count or 25)\
+        .all()
     strings = []
-    for tweet in found_tweets:
-        strings.append(str(tweet))
+    for word in found_words:
+        strings.append(str({word[0]: word[1]}))
     result = ','.join(strings)
     return '[' + result + ']'
 
+
+def filter_tweets(user_name, verified, start_date, end_date):
+    query = Tweet.query.with_entities(Word.word, func.count(Word.word).label('occurrences'))\
+        .join(WordsInTweet)\
+
+    if user_name:
+        query = query.filter_by(user_name=user_name)
+    if verified:
+        verified_boolean = to_bool(verified)
+        query = query.filter_by(verified=verified_boolean)
+    if start_date:
+        time_stamp = datetime.fromtimestamp(int(start_date))
+        query = query.filter(Tweet.created > time_stamp)
+    if end_date:
+        time_stamp = datetime.fromtimestamp(int(end_date))
+        query = query.filter(Tweet.created < time_stamp)
+    return query
 
 
 if __name__ == '__main__':
