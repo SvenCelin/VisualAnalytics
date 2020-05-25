@@ -6,7 +6,10 @@ var query = {
     dateTo : 1584662400, //CHANGE THIS!
     colorPallete : "pallete1", //name of the collor pallete 
     maxFontSize : 25,
-    maxTags : 50
+    maxTags : 50,
+    color : "#696969",
+    rotation : 0,
+    font: "Impact"
 };
 
 function setUserType(value){

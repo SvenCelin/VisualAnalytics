@@ -1,21 +1,32 @@
 
+// variables that could be changed in style
+
+
+
 // List of words
-var myWords = [{word: "Running", size: "10"},
-    {word: "Surfing", size: "20"},
-    {word: "Climbing", size: "50"},
-    {word: "Kiting", size: "30"},
-    {word: "Sailing", size: "20"},
-    {word: "Snowboarding", size: "60"} ]
+var myWords = [{ word: "Running", size: "10" },
+    { word: "Surfing", size: "20" },
+    { word: "Climbing", size: "50" },
+    { word: "Kiting", size: "30" },
+    { word: "Sailing", size: "20" },
+    { word: "Snowboarding", size: "60" }]
 
 // set the dimensions and margins of the graph
-var margin = {top: 10, right: 10, bottom: 10, left: 10},
-    width = 450 - margin.left - margin.right,
-    height = 450 - margin.top - margin.bottom;
+var clientWidth = document.getElementById('my_dataviz').clientWidth;
+var clientHeight = document.getElementById('my_dataviz').clientHeight;
+var margin = { top: 10, right: 10, bottom: 10, left: 10 },
+    width = clientWidth - margin.left - margin.right,
+    height = clientHeight - margin.top - margin.bottom;
+
+
+var viewBoxVariable = "0 0 " + width + " " + height;
 
 // append the svg object to the body of the page
 var svg = d3.select("#my_dataviz").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("width", "100%")
+    .attr("height", "100%")
+    .attr("viewBox", viewBoxVariable)
+    //.atrr("preserveAspectRatio ", "none")
     .append("g")
     .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
@@ -24,11 +35,11 @@ var svg = d3.select("#my_dataviz").append("svg")
 // Wordcloud features that are different from one word to the other must be here
 var layout = d3.layout.cloud()
     .size([width, height])
-    .words(myWords.map(function(d) { return {text: d.word, size:d.size}; }))
+    .words(myWords.map(function (d) { return { text: d.word, size: d.size }; }))
     .padding(10)        //space between words
     //.rotate(function() { return ~~(Math.random() * 2) * 90; })
-    .rotate(0)
-    .fontSize(function(d) { return d.size; })      // font size of words
+    .rotate(query.rotation)
+    .fontSize(function (d) { return d.size; })      // font size of words
     .on("end", draw);
 layout.start();
 
@@ -41,12 +52,12 @@ function draw(words) {
         .selectAll("text")
         .data(words)
         .enter().append("text")
-        .style("font-size", function(d) { return d.size; })
-        .style("fill", "#69b3a2")
+        .style("font-size", function (d) { return d.size; })
+        .style("fill", query.color)
         .attr("text-anchor", "middle")
-        .style("font-family", "Impact")
-        .attr("transform", function(d) {
+        .style("font-family", query.font)
+        .attr("transform", function (d) {
             return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
         })
-        .text(function(d) { return d.text; });
+        .text(function (d) { return d.text; });
 }

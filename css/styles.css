@@ -23,12 +23,12 @@
   .cloudDiv{
     height: 85%;
     width: 70%;
-    float: inline-start;
+    float: left;
   }
 
   .controlDiv{
     width: 25%;
-    float: inline-end;
+    float: right;
     margin-right: 20px;
     padding: 25px;
     border: 1px solid black;
