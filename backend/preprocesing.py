@@ -28,5 +28,5 @@ def cleanData(sentence):
 # clean data
 data['text'] = data['text'].map(lambda x: cleanData(x))
 
-
 print(data.text.head())
+data.to_json(r"procesed.json")
