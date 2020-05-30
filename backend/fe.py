@@ -77,9 +77,12 @@ def search_words():
         .order_by(text('occurrences DESC'))\
         .limit(count or 25)\
         .all()
+    total_count = 0
+    for word in found_words:
+        total_count += word[1]
     strings = []
     for word in found_words:
-        strings.append(str({word[0]: word[1]}))
+        strings.append(str({word[0]: word[1]/total_count}))
     result = ','.join(strings)
     return '[' + result + ']'
 
