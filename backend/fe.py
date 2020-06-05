@@ -79,9 +79,10 @@ def search_words():
         .all()
     strings = []
     for word in found_words:
-        strings.append(str({word[0]: word[1]}))
-    result = ','.join(strings)
-    return '[' + result + ']'
+        strings.append(word[0])
+        strings.append(word[1])
+    return str(strings)
+
 
 
 def filter_tweets(user_name, verified, start_date, end_date):

@@ -9,7 +9,8 @@ var query = {
     maxTags : 50,
     color : "#696969",
     rotation : 0,
-    font: "Impact" //add more font names in index.html as options
+    font: "Impact", //add more font names in index.html as options
+    words: []
 };
 
 function setUserType(value){
@@ -67,5 +68,31 @@ function showMenu(menuChoice) {
 
 function generate() {
     //ToDo: this should refresh the:  my_dataviz div
+    nacrtaj();
     console.dir(query);
-} 
+}
+
+
+function fetchData(){
+    var url = "http://127.0.0.1:5000/searchWords";
+    var request = new XMLHttpRequest()
+    request.open('GET', url);
+    request.responseType = 'text';
+    request.send();
+    request.onload = function() {
+        var responseArray = request.response;
+        responseArray = responseArray.replace(/\s+/g, '');
+        responseArray = responseArray.replace(/'/g, '');
+        var myArray = new Array();
+        myArray = responseArray.slice( 1, -1).split(",");
+        var i;
+        var listOfObjects = [];
+        for (i = 0; i < myArray.length; i+=2) {
+          var singleObj = {}
+          singleObj['word'] = myArray[i];
+          singleObj['size'] = myArray[i+1];
+          listOfObjects.push(singleObj);
+        }
+        query.words = listOfObjects;
+    };
+}
