@@ -9,7 +9,7 @@ from sqlalchemy import func
 
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='../',)
 DB_URL = 'postgresql://{user}:{pw}@{url}:{port}/{db}'.format(user='va', pw='va', url='localhost', db='va', port='5435')
 
 
