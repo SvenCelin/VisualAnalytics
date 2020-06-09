@@ -66,6 +66,7 @@ db.create_all()
 def to_bool(v):
     return v.lower() in ("true", "1")
 
+
 @app.route('/searchWords')
 def search_words():
     user_name = request.args.get('user_name')
@@ -86,6 +87,13 @@ def search_words():
         strings.append(word[1]/total_count)
     return str(strings)
 
+
+@app.route('/meta')
+def meta_info():
+    tweet_count = db.session.execute(Tweet.query.statement.with_only_columns([func.count()]).order_by(None)).scalar()
+    user_count = len(db.session.query(Tweet.user_id, func.count(Tweet.user_id)).group_by(Tweet.user_id).all())
+    word_count = db.session.execute(Word.query.statement.with_only_columns([func.count()]).order_by(None)).scalar()
+    return json.dumps({'tweets': tweet_count, 'words': word_count, 'userCount': user_count})
 
 
 def filter_tweets(user_name, verified, start_date, end_date):

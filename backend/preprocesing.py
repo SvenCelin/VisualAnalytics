@@ -1,18 +1,11 @@
 import nltk
-import random
-import pandas as pd
-import numpy as np
 import re
+import json
 
 # get stop words from nltk
 from nltk.corpus import stopwords
 nltk.download("stopwords")
 stopWords = stopwords.words('english')
-
-#import data
-#or if you respect your ram just do per data-x.json
-data = pd.read_json('location_merged_unduplicated_sentiment.json')
-
 
 # pre processing data
 def cleanData(sentence):
@@ -25,8 +18,28 @@ def cleanData(sentence):
 
     return sentence
 
-# clean data
-data['text'] = data['text'].map(lambda x: cleanData(x))
-
-print(data.text.head())
-data.to_json(r"procesed.json")
+#import data
+input_files = [
+    "data-ordered-1.json",
+    "data-ordered-2.json",
+    "data-ordered-3.json",
+    "data-ordered-4.json",
+    "data-ordered-5.json",
+    "data-ordered-6.json",
+    "data-ordered-7.json",
+    "data-ordered-8.json",
+    "data-ordered-9.json",
+    "data-ordered-10.json",
+    "data-ordered-11.json",
+    "data-ordered-12.json"
+]
+file_index = 1
+for input_file in input_files:
+    with open(input_file) as json_file:
+        data = json.load(json_file)
+        for tweet in data:
+            tweet['original_text'] = tweet['text']
+            tweet['text'] = cleanData(tweet['text'])
+        with open('data-without-stopp-words-%d.json' % file_index, 'w') as outfile:
+            outfile.write(json.dumps(data))
+    file_index += 1

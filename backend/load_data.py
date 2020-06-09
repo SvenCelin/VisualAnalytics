@@ -8,18 +8,18 @@ regex = re.compile(r"[^a-zA-Z ]", re.IGNORECASE)
 
 def load_data():
     input_files =   [
-                    "data-ordered-1.json",
-                    "data-ordered-2.json",
-                    "data-ordered-3.json",
-                    "data-ordered-4.json",
-                    "data-ordered-5.json",
-                    "data-ordered-6.json",
-                    "data-ordered-7.json",
-                    "data-ordered-8.json",
-                    "data-ordered-9.json",
-                    "data-ordered-10.json",
-                    "data-ordered-11.json",
-                    "data-ordered-12.json"
+                    "data-without-stopp-words-1.json",
+                    "data-without-stopp-words-2.json",
+                    "data-without-stopp-words-3.json",
+                    "data-without-stopp-words-4.json",
+                    "data-without-stopp-words-5.json",
+                    "data-without-stopp-words-6.json",
+                    "data-without-stopp-words-7.json",
+                    "data-without-stopp-words-8.json",
+                    "data-without-stopp-words-9.json",
+                    "data-without-stopp-words-10.json",
+                    "data-without-stopp-words-11.json",
+                    "data-without-stopp-words-12.json"
                     ]
     for input_file in input_files:
         with open(input_file) as json_file:
