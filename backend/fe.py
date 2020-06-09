@@ -83,7 +83,7 @@ def search_words():
     strings = []
     for word in found_words:
         strings.append(word[0])
-        strings.append(word[1])
+        strings.append(word[1]/total_count)
     return str(strings)
 
 
