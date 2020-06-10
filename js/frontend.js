@@ -68,7 +68,7 @@ function showMenu(menuChoice) {
 
 function generate() {
     //ToDo: this should refresh the:  my_dataviz div
-    nacrtaj();
+    drawTagCloud();
     console.dir(query);
 }
 
@@ -90,9 +90,11 @@ function fetchData(){
         for (i = 0; i < myArray.length; i+=2) {
           var singleObj = {}
           singleObj['word'] = myArray[i];
-          singleObj['size'] = myArray[i+1];
+          singleObj['size'] = parseInt(myArray[i+1], 10);
           listOfObjects.push(singleObj);
         }
         query.words = listOfObjects;
     };
+    console.log("fetched");
+    console.log(query.words);
 }
