@@ -19,38 +19,47 @@ function setUserType(value){
     } else {
         query.userType = false;
     }
+    generate();
 }
 
 function setUserName(value){
     query.userName = value;
+    generate();
 }
 
 function setDateFrom(value){
     query.dateFrom = value;
+    generate();
 }
 
 function setDateTo(value){
     query.dateTo = value;
+    generate();
 }
 
 function setFont(value){
     query.font = value;
+    generate();
 }
 
 function setColor(value){
     query.color = value;
+    generate();
 }
 
 function setMaxFontSize(value){
     query.maxFontSize = value;
+    generate();
 }
 
 function setMaxTags(value){
     query.maxTags = value;
+    generate();
 }
 
 function setRotation(value){
     query.rotation = value;
+    generate();
 }
 
 function showMenu(menuChoice) {
@@ -67,6 +76,7 @@ function showMenu(menuChoice) {
 }
 
 function generate() {
+    document.getElementById("my_dataviz").innerHTML = "";
     //ToDo: this should refresh the:  my_dataviz div
     drawTagCloud();
     console.dir(query);
