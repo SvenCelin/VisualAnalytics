@@ -4,7 +4,7 @@ from flask import request
 import json
 import time
 from datetime import datetime
-from sqlalchemy import text
+from sqlalchemy import text, cast, Date as sqlDate
 from sqlalchemy import func
 
 
@@ -93,7 +93,13 @@ def meta_info():
     tweet_count = db.session.execute(Tweet.query.statement.with_only_columns([func.count()]).order_by(None)).scalar()
     user_count = len(db.session.query(Tweet.user_id, func.count(Tweet.user_id)).group_by(Tweet.user_id).all())
     word_count = db.session.execute(Word.query.statement.with_only_columns([func.count()]).order_by(None)).scalar()
-    return json.dumps({'tweets': tweet_count, 'words': word_count, 'userCount': user_count})
+    dates = db.session.execute(Tweet.query.statement.with_only_columns([cast(func.max(Tweet.created), sqlDate), cast(func.min(Tweet.created), sqlDate)]))
+    min_date = ''
+    max_date = ''
+    for row in dates:
+        min_date = time.mktime(row[0].timetuple())
+        max_date = time.mktime(row[1].timetuple())
+    return json.dumps({'tweets': tweet_count, 'words': word_count, 'userCount': user_count, 'minDate': min_date, 'maxDate': max_date})
 
 
 def filter_tweets(user_name, verified, start_date, end_date):
