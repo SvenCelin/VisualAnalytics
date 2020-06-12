@@ -5,7 +5,7 @@ var query = {
     dateFrom : "2020-01-01" , //unix time TODO
     dateTo : "2020-01-05", //CHANGE THIS!
     //colorPallete : "pallete1", //name of the collor pallete 
-    maxFontSize : 25,
+    maxFontSize : 80,
     maxTags : 50,
     color : "#696969",
     rotation : 0,
