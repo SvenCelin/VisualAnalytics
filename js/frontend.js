@@ -5,12 +5,14 @@ var query = {
     dateFrom : "2020-01-01" , //unix time TODO
     dateTo : "2020-01-05", //CHANGE THIS!
     //colorPallete : "pallete1", //name of the collor pallete 
+    minFontSize : 5,
     maxFontSize : 25,
     maxTags : 50,
     color : "#696969",
     rotation : 0,
     font: "Impact", //add more font names in index.html as options
-    words: []
+    words: [],
+    loading: ""
 };
 
 function setUserType(value){
@@ -19,47 +21,42 @@ function setUserType(value){
     } else {
         query.userType = false;
     }
-    generate();
 }
 
 function setUserName(value){
     query.userName = value;
-    generate();
 }
 
 function setDateFrom(value){
     query.dateFrom = value;
-    generate();
 }
 
 function setDateTo(value){
     query.dateTo = value;
-    generate();
 }
 
 function setFont(value){
     query.font = value;
-    generate();
 }
 
 function setColor(value){
     query.color = value;
-    generate();
+}
+
+function setMinFontSize(value){
+    query.mainFontSize = value;
 }
 
 function setMaxFontSize(value){
     query.maxFontSize = value;
-    generate();
 }
 
 function setMaxTags(value){
     query.maxTags = value;
-    generate();
 }
 
 function setRotation(value){
     query.rotation = value;
-    generate();
 }
 
 function showMenu(menuChoice) {
@@ -78,10 +75,29 @@ function showMenu(menuChoice) {
 function generate() {
     document.getElementById("my_dataviz").innerHTML = "";
     //ToDo: this should refresh the:  my_dataviz div
-    drawTagCloud();
-    console.dir(query);
+    fetchMeta(loadingBar);
+    //drawTagCloud();
+  //  console.log(query.loading);
+    //console.dir(query);
 }
 
+function fetchMeta(_callback){
+    var url = "http://127.0.0.1:5000/meta";
+    var request = new XMLHttpRequest()
+    request.open('GET', url);
+    request.responseType = 'text';
+    request.send();
+    request.onload = function() {
+        var responseArray = request.response;
+        responseArray = responseArray.slice( 1, -1);  
+        query.loading = responseArray.replace(/"/g, "");
+        _callback();
+    };
+}
+
+function loadingBar(){
+    console.log(query.loading);
+}
 
 function fetchData(){
     var url = "http://127.0.0.1:5000/searchWords";
