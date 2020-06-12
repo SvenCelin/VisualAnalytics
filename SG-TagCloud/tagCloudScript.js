@@ -3,6 +3,9 @@ function drawTagCloud() {
     // List of words
     var myWords = query.words;
 
+    var minFontSize = 20;
+    var maxFontSize = query.maxFontSize;
+
     var minCount = myWords[0].size;
     var maxCount = myWords[0].size;
     var tmp;
@@ -57,7 +60,7 @@ function drawTagCloud() {
         .padding(10)        //space between words
         //.rotate(function() { return ~~(Math.random() * 2) * 90; })
         .rotate(query.rotation)
-        .fontSize(function (d) { return (d.size - 0)*((80 - 20)/(1 - 0)) + 20; })      // font size of words
+        .fontSize(function (d) { return (d.size - minCount)*((maxFontSize - minFontSize)/(maxCount - minCount)) + minFontSize; })      // font size of words
         .on("end", draw);
     layout.start();
 
