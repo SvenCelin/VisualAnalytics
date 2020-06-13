@@ -97,8 +97,8 @@ def meta_info():
     min_date = ''
     max_date = ''
     for row in dates:
-        min_date = time.mktime(row[0].timetuple())
-        max_date = time.mktime(row[1].timetuple())
+        min_date = time.mktime(row[1].timetuple())
+        max_date = time.mktime(row[0].timetuple())
     return json.dumps({'tweets': tweet_count, 'words': word_count, 'userCount': user_count, 'minDate': min_date, 'maxDate': max_date})
 
 
