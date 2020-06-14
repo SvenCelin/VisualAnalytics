@@ -77,10 +77,8 @@ function generate() {
 
     document.getElementById("my_dataviz").innerHTML = "";
 
-    fetchData();
+    fetchData(drawTagCloud);
     fetchMeta(loadingBarStart);
-
-    drawTagCloud();
 
     //ToDo: make sure this is called only when the tag cloud is actually drawn
     //TODO: find out why isn't it working right now
@@ -114,11 +112,10 @@ function loadingBarSTOP() {
     console.log("stop");
 }
 
-function fetchData() {
+function fetchData(_callback) {
 
     var url = "http://127.0.0.1:5000/searchWords";
     var flag = 0;
-    // TODO add "?" at the beginning "&" between parameters
     if(query.userName && query.userName != "user1"){
         flag = 1;
         url = url.concat("?");
@@ -168,6 +165,9 @@ function fetchData() {
             listOfObjects.push(singleObj);
         }
         query.words = listOfObjects;
+        console.log(_callback);
+
+        _callback();
     };
     console.log("fetched");
     console.log(query.words);
