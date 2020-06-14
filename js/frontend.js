@@ -2,8 +2,8 @@
 var query = {
     userType: false, //true means Verified, false means all
     userName: "user1", //array of selected user names, or just one username for now?
-    dateFrom: "2020-01-01", //unix time TODO
-    dateTo: "2020-01-05", //CHANGE THIS!
+    dateFrom: "", //unix time TODO
+    dateTo: "", //CHANGE THIS!
     //colorPallete : "pallete1", //name of the collor pallete 
     minFontSize: 20,
     maxFontSize: 80,
@@ -78,7 +78,8 @@ function generate() {
     fetchMeta(loadingBarStart);
     document.getElementById("my_dataviz").innerHTML = "";
 
-    //drawTagCloud();
+    fetchData();
+    drawTagCloud();
 
     //ToDo: make sure this is called only when the tag cloud is actually drawn
     loadingBarSTOP();
@@ -109,7 +110,40 @@ function loadingBarSTOP() {
 }
 
 function fetchData() {
+
     var url = "http://127.0.0.1:5000/searchWords";
+    var flag = 0;
+    // TODO add "?" at the beginning "&" between parameters
+    if(query.userName && query.userName != "user1"){
+        flag = 1;
+        url = url.concat("?");
+        url = url.concat("user_name=" + query.userName);
+
+    }
+    if(query.userType == true){
+        if(flag == 0){
+             url = url.concat("?");
+            flag = 1;
+        }
+        else{
+             url = url.concat("&");
+        }
+         url = url.concat("verified=true");
+        console.log("verified");
+    }
+    if(query.dateFrom && query.dateTo){
+        if(flag == 0){
+             url = url.concat("?");
+            flag = 1;
+        }
+        else{
+             url = url.concat("&");
+        }
+         url = url.concat("from=" + query.dateFrom + "&to=" + query.dateTo)
+    }
+
+
+    console.log(url);
     var request = new XMLHttpRequest()
     request.open('GET', url);
     request.responseType = 'text';

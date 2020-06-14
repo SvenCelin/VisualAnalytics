@@ -17,7 +17,7 @@ function drawTagCloud() {
         if (tmp < minCount) minCount = tmp;
         if (tmp > maxCount) maxCount = tmp;
     }
-    
+
     for(var i = 0; i < myWords.length; i++) {
         myWords[i].size = (myWords[i].size - minCount)/(maxCount - minCount);
     }
