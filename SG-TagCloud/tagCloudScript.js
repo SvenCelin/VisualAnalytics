@@ -70,7 +70,7 @@ function drawTagCloud() {
             .data(words)
             .enter().append("text")
             .style("font-size", function (d) { return d.size; })
-            .style("fill", query.color)
+            .style("fill", function(word, index) { return getColorFromPalette(index, query.words.length)})
             .attr("text-anchor", "middle")
             .style("font-family", query.font)
             .attr("transform", function (d) {

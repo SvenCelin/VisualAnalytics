@@ -76,15 +76,23 @@
             </div>
 
             Color pallete:
-            <input type="color" value="#696969" onchange="setColor(this.value)">
-            <!--
+
             <div class="dropdown">
-                <select class="dropdown-select" onchange="setColorPallete(value)">
-                    <option value="pallete1">Pallete 1</option>
-                    <option value="pallete2">Pallete 2</option>
+                <select class="dropdown-select" id="paletteDropDown" onchange="setColorPallete(value)">
                 </select>
             </div>
-            -->
+
+            <div id="showCaseWrapper">
+            Used colors:
+                <div id="colorShowCase" style="height: 25px; width: 100%">
+
+                </div>
+            </div>
+
+            <div id="customColorContainer">
+                Custom:
+                <input type="color" value="#696969" onchange="setToCustomColor(this.value)">
+            </div>
 
             Minimum font size (20):
             <input type="number" min="20" max="119" value="20" onchange="setMinFontSize(this.value)">

@@ -1,19 +1,33 @@
 //currently hardcoded
 var query = {
     userType: false, //true means Verified, false means all
-    userName: "user1", //array of selected user names, or just one username for now?
-    dateFrom: "", //unix time TODO
-    dateTo: "", //CHANGE THIS!
-    //colorPallete : "pallete1", //name of the collor pallete 
+    userName: undefined, //array of selected user names, or just one username for now?
+    dateFrom: undefined, //unix time TODO
+    dateTo: undefined, //CHANGE THIS!
     minFontSize: 20,
     maxFontSize: 80,
     maxTags: 50,
-    color: "#696969",
     rotation: 0,
     font: "Impact", //add more font names in index.html as options
     words: [],
     loading: {}
 };
+
+
+let customPaletteName = "one color";
+let palettes = [
+    {name: "pastel", colors:["#987284","#9dbf9e","#d0d6b5","#f9b5ac","#ee7674"]},
+    {name: "blue gradient", colors:["#03045e","#0077b6","#00b4d8","#90e0ef","#caf0f8"]},
+    {name: "pink/red/black", colors:["#ffd9da","#ea638c","#89023e","#30343f","#1b2021"]},
+    {name: "blueish/yellow/red", colors:["#7fb7be","#d3f3ee","#dacc3e","#bc2c1a","#7d1538"]},
+    {name: "a lot of colors", colors:["#ffe74c","#ff5964","#ffffff","#6bf178","#35a7ff","#454545","#6ba292","#35ce8d","#69306d","#0e103d"]},
+    {name: customPaletteName, colors: []}
+]
+
+let config = {
+    chosenPalette: palettes[0],
+    customColor: {}
+}
 
 function setUserType(value) {
     if (value == 1) {
@@ -40,8 +54,8 @@ function setFont(value) {
     query.font = value;
 }
 
-function setColor(value) {
-    query.color = value;
+function setToCustomColor(value) {
+    config.customColor = value;
 }
 
 function setMinFontSize(value) {
@@ -71,6 +85,19 @@ function showMenu(menuChoice) {
         menu1.style.display = "none";
         menu2.style.display = "block";
     }
+
+    setupShowCase();
+}
+
+function getColorFromPalette(index, total){
+    if(config.chosenPalette.name === customPaletteName) {
+        return config.customColor;
+    }
+    let paletteToUse = palettes.find(value => value.name === config.chosenPalette.name);
+    let relative = index / total;
+    let colorCount = paletteToUse.colors.length;
+    let colorIndex = Math.floor(Math.min(relative * colorCount, colorCount -1));
+    return paletteToUse.colors[colorIndex];
 }
 
 function generate() {
@@ -99,6 +126,54 @@ function fetchMeta(_callback) {
     };
 }
 
+function setColorPallete(value) {
+    if(value === customPaletteName) {
+        showById('customColorContainer')
+        hideById('showCaseWrapper')
+        config.chosenPalette = palettes[palettes.length - 1]
+    } else {
+        hideById('customColorContainer')
+        config.chosenPalette = palettes.find(searchValue => searchValue.name === value);
+        showById('showCaseWrapper')
+        setupShowCase();
+    }
+}
+
+function setupShowCase() {
+    let showCaseId = document.getElementById('colorShowCase');
+    showCaseId.innerHTML = '';
+    let colorCount = config.chosenPalette.colors.length;
+    let totalWidth = showCaseId.clientWidth;
+    config.chosenPalette.colors.forEach(value => {
+        let colorDiv = document.createElement('div');
+        colorDiv.style.backgroundColor = value;
+        colorDiv.style.width = totalWidth / colorCount + 'px';
+        colorDiv.style.height = showCaseId.clientHeight + 'px';
+        colorDiv.style.float = 'left';
+        showCaseId.appendChild(colorDiv);
+    })
+}
+
+function loadPalettes() {
+    let paletteDropDown = document.getElementById('paletteDropDown');
+    palettes.forEach(value => {
+        let option = document.createElement("option");
+        option.text = value.name;
+        option.value = value.name;
+        paletteDropDown.add(option);
+    })
+    hideById('customColorContainer');
+    showById('showCaseWrapper')
+}
+
+function hideById(id) {
+    document.getElementById(id).style.display = "none";
+}
+
+function showById(id) {
+    document.getElementById(id).style.display = "block";
+}
+
 function loadingBarStart() {
     document.getElementById("loadingIcon").style.display = "block";
     document.getElementById("loadingText").innerHTML =
@@ -114,36 +189,26 @@ function loadingBarSTOP() {
 function fetchData(_callback) {
 
     var url = "http://127.0.0.1:5000/searchWords";
-    var flag = 0;
-    if (query.userName && query.userName != "user1") {
-        flag = 1;
-        url = url.concat("?");
-        url = url.concat("user_name=" + query.userName);
-
+    let queryParams = [];
+    if(query.userName){
+       queryParams.push({name: 'user_name', value: query.userName});
     }
-    if (query.userType == true) {
-        if (flag == 0) {
-            url = url.concat("?");
-            flag = 1;
-        }
-        else {
-            url = url.concat("&");
-        }
-        url = url.concat("verified=true");
-        console.log("verified");
+    if(query.userType == true){
+        queryParams.push({name: 'verified', value: 'true'});
     }
-    if (query.dateFrom && query.dateTo) {
-        if (flag == 0) {
-            url = url.concat("?");
-            flag = 1;
-        }
-        else {
-            url = url.concat("&");
-        }
-        url = url.concat("from=" + query.dateFrom + "&to=" + query.dateTo)
+    if(query.dateFrom){
+        queryParams.push({name: 'from', value: query.dateFrom});
     }
-
-
+    if(query.dateTo) {
+        queryParams.push({name: 'to', value: query.dateTo});
+    }
+    if(query.maxTags) {
+        queryParams.push({name: 'maxCount', value: query.maxTags});
+    }
+    if(queryParams.length > 0) {
+        url += '?';
+    }
+    url += queryParams.map(value => value.name +'=' + value.value).join('&');
     console.log(url);
     var request = new XMLHttpRequest()
     request.open('GET', url);
@@ -189,3 +254,6 @@ function populateUserSearch(){
         document.getElementById('userName').innerHTML = options;
     };
 }
+document.addEventListener('DOMContentLoaded', function() {
+    loadPalettes();
+});
