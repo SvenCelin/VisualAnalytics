@@ -77,8 +77,10 @@ function generate() {
 
     document.getElementById("my_dataviz").innerHTML = "";
 
-    fetchData();
     fetchMeta(loadingBarStart);
+    
+    fetchData();
+    
 
     drawTagCloud();
 
