@@ -206,6 +206,11 @@ input[type=number] {
 }
 
 /*loading icon*/
+#loadingIcon {
+  margin: auto;
+
+}
+
 .sk-folding-cube {
   margin: 36px;
   

@@ -12,7 +12,7 @@ var query = {
     rotation: 0,
     font: "Impact", //add more font names in index.html as options
     words: [],
-    loading: ""
+    loading: {}
 };
 
 function setUserType(value) {
@@ -75,12 +75,14 @@ function showMenu(menuChoice) {
 function generate() {
     document.getElementById("generateButton").innerHTML = "Loading";
 
-    fetchMeta(loadingBarStart);
     document.getElementById("my_dataviz").innerHTML = "";
 
-    //drawTagCloud();
+    fetchMeta(loadingBarStart);
+
+    drawTagCloud();
 
     //ToDo: make sure this is called only when the tag cloud is actually drawn
+    //TODO: find out why isn't it working right now
     loadingBarSTOP();
 }
 
@@ -91,21 +93,24 @@ function fetchMeta(_callback) {
     request.responseType = 'text';
     request.send();
     request.onload = function () {
-        var responseArray = request.response;
-        responseArray = responseArray.slice(1, -1);
-        query.loading = responseArray.replace(/"/g, "");
+        //var responseArray = ;
+        query.loading = JSON.parse(request.response);
+        //query.loading now has properties: tweets, words, userCount, minDate, maxDate
+        console.log(query.loading.tweets);
         _callback();
     };
 }
 
 function loadingBarStart() {
     document.getElementById("loadingIcon").style.display = "block";
-    document.getElementById("loadingText").innerHTML = query.loading;
+    document.getElementById("loadingText").innerHTML = 
+    "Looking through <b>" + query.loading.tweets + " tweets </b><br> with <b>" + query.loading.words +  "</b> unique <b>words</b> <br>from <b>" + query.loading.userCount + " users.</b>";
 }
 
 function loadingBarSTOP() {
     document.getElementById("loadingIcon").style.display = "none";
     document.getElementById("generateButton").innerHTML = "Generate";
+    console.log("stop");
 }
 
 function fetchData() {
