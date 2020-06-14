@@ -1,10 +1,13 @@
 
 function drawTagCloud() {
     // List of words
+
     var myWords = query.words;
 
-    var minFontSize = 20;
+    var minFontSize = query.minFontSize;
     var maxFontSize = query.maxFontSize;
+
+    console.log(minFontSize, maxFontSize);
 
     var minCount = myWords[0].size;
     var maxCount = myWords[0].size;
@@ -14,15 +17,16 @@ function drawTagCloud() {
         if (tmp < minCount) minCount = tmp;
         if (tmp > maxCount) maxCount = tmp;
     }
-    console.log(maxCount, minCount);
-
+    
     for(var i = 0; i < myWords.length; i++) {
         myWords[i].size = (myWords[i].size - minCount)/(maxCount - minCount);
     }
 
+    maxCount = myWords[0].size;
+    minCount = myWords[myWords.length - 1].size;
+
+    console.log(maxCount, minCount);
     console.log(myWords);
-
-
 
     // set the dimensions and margins of the graph
     var clientWidth = document.getElementById('my_dataviz').clientWidth;
@@ -30,14 +34,6 @@ function drawTagCloud() {
     var margin = { top: 10, right: 10, bottom: 10, left: 10 },
         width = clientWidth - margin.left - margin.right,
         height = clientHeight - margin.top - margin.bottom;
-
-    console.log("width " + width);
-    console.log("height " + height);
-
-    var surface = width + height;
-    console.log("surface " + surface);
-
-
 
     var viewBoxVariable = "0 0 " + width + " " + height;
 
