@@ -1,9 +1,9 @@
 //currently hardcoded
 var query = {
     userType: false, //true means Verified, false means all
-    userName: "user1", //array of selected user names, or just one username for now?
-    dateFrom: "", //unix time TODO
-    dateTo: "", //CHANGE THIS!
+    userName: undefined, //array of selected user names, or just one username for now?
+    dateFrom: undefined, //unix time TODO
+    dateTo: undefined, //CHANGE THIS!
     minFontSize: 20,
     maxFontSize: 80,
     maxTags: 50,
@@ -190,36 +190,26 @@ function loadingBarSTOP() {
 function fetchData(_callback) {
 
     var url = "http://127.0.0.1:5000/searchWords";
-    var flag = 0;
-    if(query.userName && query.userName != "user1"){
-        flag = 1;
-        url = url.concat("?");
-        url = url.concat("user_name=" + query.userName);
-
+    let queryParams = [];
+    if(query.userName){
+       queryParams.push({name: 'user_name', value: query.userName});
     }
     if(query.userType == true){
-        if(flag == 0){
-             url = url.concat("?");
-            flag = 1;
-        }
-        else{
-             url = url.concat("&");
-        }
-         url = url.concat("verified=true");
-        console.log("verified");
+        queryParams.push({name: 'verified', value: 'true'});
     }
-    if(query.dateFrom && query.dateTo){
-        if(flag == 0){
-             url = url.concat("?");
-            flag = 1;
-        }
-        else{
-             url = url.concat("&");
-        }
-         url = url.concat("from=" + query.dateFrom + "&to=" + query.dateTo)
+    if(query.dateFrom){
+        queryParams.push({name: 'from', value: query.dateFrom});
     }
-
-
+    if(query.dateTo) {
+        queryParams.push({name: 'to', value: query.dateTo});
+    }
+    if(query.maxTags) {
+        queryParams.push({name: 'maxCount', value: query.maxTags});
+    }
+    if(queryParams.length > 0) {
+        url += '?';
+    }
+    url += queryParams.map(value => value.name +'=' + value.value).join('&');
     console.log(url);
     var request = new XMLHttpRequest()
     request.open('GET', url);
