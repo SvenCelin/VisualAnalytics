@@ -24,6 +24,10 @@
     height: 85%;
     width: 70%;
     float: left;
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;
+    background-color: #e2e2e2;
   }
 
   .controlDiv{
