@@ -14,13 +14,13 @@ var query = {
 };
 
 
-let customPaletteName = "one color";
+let customPaletteName = "Custom one color";
 let palettes = [
-    {name: "pastel", colors:["#987284","#9dbf9e","#d0d6b5","#f9b5ac","#ee7674"]},
-    {name: "blue gradient", colors:["#03045e","#0077b6","#00b4d8","#90e0ef","#caf0f8"]},
-    {name: "pink/red/black", colors:["#ffd9da","#ea638c","#89023e","#30343f","#1b2021"]},
-    {name: "blueish/yellow/red", colors:["#7fb7be","#d3f3ee","#dacc3e","#bc2c1a","#7d1538"]},
-    {name: "a lot of colors", colors:["#ffe74c","#ff5964","#ffffff","#6bf178","#35a7ff","#454545","#6ba292","#35ce8d","#69306d","#0e103d"]},
+    {name: "Pastel", colors:["#987284","#9dbf9e","#d0d6b5","#f9b5ac","#ee7674"]},
+    {name: "Blue gradient", colors:["#03045e","#0077b6","#00b4d8","#90e0ef","#caf0f8"]},
+    {name: "Pink/red/black", colors:["#ffd9da","#ea638c","#89023e","#30343f","#1b2021"]},
+    {name: "Blueish/yellow/red", colors:["#7fb7be","#d3f3ee","#dacc3e","#bc2c1a","#7d1538"]},
+    {name: "A lot of colors", colors:["#ffe74c","#ff5964","#ffffff","#6bf178","#35a7ff","#454545","#6ba292","#35ce8d","#69306d","#0e103d"]},
     {name: customPaletteName, colors: []}
 ]
 
@@ -107,9 +107,6 @@ function generate() {
 
     fetchMeta(loadingBarStart);
     fetchData(drawTagCloud);
-
-    //ToDo: make sure this is called only when the tag cloud is actually drawn
-    //TODO: find out why isn't it working right now
 }
 
 function fetchMeta(_callback) {
@@ -147,7 +144,7 @@ function setupShowCase() {
     config.chosenPalette.colors.forEach(value => {
         let colorDiv = document.createElement('div');
         colorDiv.style.backgroundColor = value;
-        colorDiv.style.width = totalWidth / colorCount + 'px';
+        colorDiv.style.width = (totalWidth / colorCount - 0.1) + 'px';
         colorDiv.style.height = showCaseId.clientHeight + 'px';
         colorDiv.style.float = 'left';
         showCaseId.appendChild(colorDiv);
