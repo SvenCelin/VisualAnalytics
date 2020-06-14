@@ -109,7 +109,7 @@ input[type=number] {
   background: #f2f2f2;
   border: 1px solid;
   border-color: white #f7f7f7 whitesmoke;
-  border-radius: 3px;
+  border-radius: 1px;
   background-image: -webkit-linear-gradient(top, transparent, rgba(0, 0, 0, 0.06));
   background-image: -moz-linear-gradient(top, transparent, rgba(0, 0, 0, 0.06));
   background-image: -o-linear-gradient(top, transparent, rgba(0, 0, 0, 0.06));
@@ -167,11 +167,12 @@ input[type=number] {
 }
 
 .dropdown-select > option {
+  font-size: 15px;
   margin: 3px;
   padding: 6px 8px;
   text-shadow: none;
   background: #f2f2f2;
-  border-radius: 3px;
+  border-radius: 1px;
   cursor: pointer;
 }
 

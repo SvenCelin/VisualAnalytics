@@ -24,7 +24,7 @@
 
 </head>
 
-<body>
+<body onload="populateUserSearch()">
     <script src="js/frontend.js"></script>
 
 
@@ -54,7 +54,9 @@
             </div>
 
             User search:
-            <input type="text" placeholder="input" value="" onchange="setUserName(this.value)">
+            <input list="userName" onchange="setUserName(this.value)" placeholder="input">
+            <datalist id="userName">
+            </datalist>
 
             Date from:
             <input type="date" min="2020-03-24" max="2020-04-08" onchange="setDateFrom(this.value)" value="2020-03-24">

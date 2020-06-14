@@ -25,6 +25,7 @@ function setUserType(value) {
 
 function setUserName(value) {
     query.userName = value;
+    console.log(query.userName);
 }
 
 function setDateFrom(value) {
@@ -77,15 +78,11 @@ function generate() {
 
     document.getElementById("my_dataviz").innerHTML = "";
 
-    fetchData(drawTagCloud);
     fetchMeta(loadingBarStart);
-    
-    fetchData();
-    
+    fetchData(drawTagCloud);
 
     //ToDo: make sure this is called only when the tag cloud is actually drawn
     //TODO: find out why isn't it working right now
-    loadingBarSTOP();
 }
 
 function fetchMeta(_callback) {
@@ -98,53 +95,52 @@ function fetchMeta(_callback) {
         //var responseArray = ;
         query.loading = JSON.parse(request.response);
         //query.loading now has properties: tweets, words, userCount, minDate, maxDate
-        console.log(query.loading.tweets);
         _callback();
     };
 }
 
 function loadingBarStart() {
     document.getElementById("loadingIcon").style.display = "block";
-    document.getElementById("loadingText").innerHTML = 
-    "Looking through <b>" + query.loading.tweets + " tweets </b><br> with <b>" + query.loading.words +  "</b> unique <b>words</b> <br>from <b>" + query.loading.userCount + " users.</b>";
+    document.getElementById("loadingText").innerHTML =
+        "Looking through <b>" + query.loading.tweets + " tweets </b><br> with <b>" + query.loading.words + "</b> unique <b>words</b> <br>from <b>" + query.loading.userCount + " users.</b>";
 }
 
 function loadingBarSTOP() {
     document.getElementById("loadingIcon").style.display = "none";
     document.getElementById("generateButton").innerHTML = "Generate";
-    console.log("stop");
+    //console.log("stop");
 }
 
 function fetchData(_callback) {
 
     var url = "http://127.0.0.1:5000/searchWords";
     var flag = 0;
-    if(query.userName && query.userName != "user1"){
+    if (query.userName && query.userName != "user1") {
         flag = 1;
         url = url.concat("?");
         url = url.concat("user_name=" + query.userName);
 
     }
-    if(query.userType == true){
-        if(flag == 0){
-             url = url.concat("?");
+    if (query.userType == true) {
+        if (flag == 0) {
+            url = url.concat("?");
             flag = 1;
         }
-        else{
-             url = url.concat("&");
+        else {
+            url = url.concat("&");
         }
-         url = url.concat("verified=true");
+        url = url.concat("verified=true");
         console.log("verified");
     }
-    if(query.dateFrom && query.dateTo){
-        if(flag == 0){
-             url = url.concat("?");
+    if (query.dateFrom && query.dateTo) {
+        if (flag == 0) {
+            url = url.concat("?");
             flag = 1;
         }
-        else{
-             url = url.concat("&");
+        else {
+            url = url.concat("&");
         }
-         url = url.concat("from=" + query.dateFrom + "&to=" + query.dateTo)
+        url = url.concat("from=" + query.dateFrom + "&to=" + query.dateTo)
     }
 
 
@@ -168,10 +164,28 @@ function fetchData(_callback) {
             listOfObjects.push(singleObj);
         }
         query.words = listOfObjects;
-        console.log(_callback);
-
+        loadingBarSTOP();
         _callback();
     };
     console.log("fetched");
     console.log(query.words);
+}
+
+function populateUserSearch(){
+    var url = "http://127.0.0.1:5000/userNames";
+    var request = new XMLHttpRequest()
+    request.open('GET', url);
+    request.responseType = 'text';
+    request.send();
+    request.onload = function () {
+        //var responseArray = ;
+        var names = JSON.parse(request.response);
+
+        var options = '';
+
+        for(var i = 0; i < names.length; i++)
+          options += '<option value="'+names[i]+'" />';
+      
+        document.getElementById('userName').innerHTML = options;
+    };
 }
