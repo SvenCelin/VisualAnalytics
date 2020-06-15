@@ -19,6 +19,7 @@ function drawTagCloud() {
     }
 
     for(var i = 0; i < myWords.length; i++) {
+        myWords[i].orig = myWords[i].size;
         myWords[i].size = (myWords[i].size - minCount)/(maxCount - minCount);
     }
 
@@ -47,12 +48,16 @@ function drawTagCloud() {
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
 
+    let toolTipDiv = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
 
     // Constructs a new cloud layout instance. It run an algorithm to find the position of words that suits your requirements
     // Wordcloud features that are different from one word to the other must be here
     var layout = d3.layout.cloud()
         .size([width, height])
-        .words(myWords.map(function (d) { return { text: d.word, size: d.size }; }))
+        .words(myWords.map(function (d) { return { text: d.word, size: d.size, orig: d.orig }; }))
         .padding(10)        //space between words
         //.rotate(function() { return ~~(Math.random() * 2) * 90; })
         .rotate(query.rotation)
@@ -76,6 +81,19 @@ function drawTagCloud() {
             .attr("transform", function (d) {
                 return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
             })
-            .text(function (d) { return d.text; });
+            .text(function (d) { return d.text; })
+            .on("mouseover", function(d) {
+                toolTipDiv.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                toolTipDiv.html(d.orig)
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+                })
+            .on("mouseout", function(d) {
+                toolTipDiv.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+        });
     }
 }

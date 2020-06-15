@@ -43,11 +43,11 @@ function setUserName(value) {
 }
 
 function setDateFrom(value) {
-    query.dateFrom = value;
+    query.dateFrom = new Date(value).getTime() / 1000;
 }
 
 function setDateTo(value) {
-    query.dateTo = value;
+    query.dateTo = new Date(value).getTime() / 1000;
 }
 
 function setFont(value) {
