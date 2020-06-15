@@ -173,7 +173,8 @@ function showById(id) {
 
 function loadingBarStart() {
     document.getElementById("loadingIcon").style.display = "block";
-    document.getElementById("loadingText").innerHTML =
+    //todo: maybe use this later?
+    //document.getElementById("loadingText").innerHTML =
         "Looking through <b>" + query.loading.tweets + " tweets </b><br> with <b>" + query.loading.words + "</b> unique <b>words</b> <br>from <b>" + query.loading.userCount + " users.</b>";
 }
 
