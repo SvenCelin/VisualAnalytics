@@ -47,6 +47,15 @@ class Tweet(db.Model):
 class Word(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     word = db.Column(db.String(500))
+    form_to_be_used = db.Column(db.String(500))
+    original_words = db.relationship('OriginalWord')
+
+
+class OriginalWord(db.Model):
+    id = db.Column(db.BigInteger, primary_key=True)
+    original = db.Column(db.String(500))
+    word_id = db.Column(db.BigInteger, db.ForeignKey(Word.id))
+    word = db.relationship(Word)
 
 
 class WordsInTweet(db.Model):
@@ -74,18 +83,21 @@ def search_words():
     start_date = request.args.get('from')
     end_date = request.args.get('to')
     count = request.args.get('maxCount')
-    found_words = filter_tweets(user_name, verified, start_date, end_date).group_by(Word.word)\
+    found_words = filter_tweets(user_name, verified, start_date, end_date).group_by(Word.form_to_be_used, Word.id)\
         .order_by(text('occurrences DESC'))\
         .limit(count or 25)\
         .all()
-    total_count = 0
+    word_ids = []
     for word in found_words:
-        total_count += word[1]
-    strings = []
+        word_ids.append(word[1])
+    with_stems = get_words_with_stems(word_ids)
+    words = []
     for word in found_words:
-        strings.append(word[0])
-        strings.append(word[1])
-    return str(strings)
+        stems = next((x for x in with_stems if x.id == word.id), None)
+        original_words = [word.original for word in stems.original_words]
+        formatted_word = {'word': word[0], 'amount': word[2], 'original': original_words}
+        words.append(formatted_word)
+    return json.dumps(words)
 
 
 @app.route('/userNames')
@@ -114,7 +126,7 @@ def filter_tweets(user_name, verified, start_date, end_date):
     query = Tweet.query\
         .join(WordsInTweet)\
         .join(Word)\
-        .with_entities(Word.word, func.count(Word.word).label('occurrences'))
+        .with_entities(Word.form_to_be_used, Word.id, func.count(Word.word).label('occurrences'))
 
     if user_name:
         query = query.filter(Tweet.user_name == user_name)
@@ -127,6 +139,11 @@ def filter_tweets(user_name, verified, start_date, end_date):
     if end_date:
         time_stamp = datetime.fromtimestamp(int(end_date))
         query = query.filter(Tweet.created < time_stamp)
+    return query
+
+
+def get_words_with_stems(word_ids):
+    query = Word.query.join(OriginalWord).filter(Word.id.in_(word_ids)).all()
     return query
 
 

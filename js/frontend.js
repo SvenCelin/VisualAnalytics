@@ -213,19 +213,15 @@ function fetchData(_callback) {
     request.responseType = 'text';
     request.send();
     request.onload = function () {
-        var responseArray = request.response;
-        responseArray = responseArray.replace(/\s+/g, '');
-        responseArray = responseArray.replace(/'/g, '');
-        var myArray = new Array();
-        myArray = responseArray.slice(1, -1).split(",");
-        var i;
-        var listOfObjects = [];
-        for (i = 0; i < myArray.length; i += 2) {
-            var singleObj = {}
-            singleObj['word'] = myArray[i];
-            singleObj['size'] = parseInt(myArray[i + 1], 10);
+        let response = JSON.parse(request.response);
+        let listOfObjects = [];
+        response.forEach((word) => {
+            let singleObj = {}
+            singleObj['word'] = word.word;
+            singleObj['size'] = parseInt(word.amount, 10);
+            singleObj['alternatives'] = word.original;
             listOfObjects.push(singleObj);
-        }
+        })
         query.words = listOfObjects;
         loadingBarSTOP();
         _callback();

@@ -57,7 +57,7 @@ function drawTagCloud() {
     // Wordcloud features that are different from one word to the other must be here
     var layout = d3.layout.cloud()
         .size([width, height])
-        .words(myWords.map(function (d) { return { text: d.word, size: d.size, orig: d.orig }; }))
+        .words(myWords.map(function (d) { return { text: d.word, size: d.size, orig: d.orig, alternatives: d.alternatives }; }))
         .padding(10)        //space between words
         //.rotate(function() { return ~~(Math.random() * 2) * 90; })
         .rotate(query.rotation)
@@ -86,8 +86,25 @@ function drawTagCloud() {
                 toolTipDiv.transition()
                     .duration(200)
                     .style("opacity", .9);
-                toolTipDiv.html(d.orig)
+                toolTipDiv.html(function() {
+                    let text = d.orig;
+                    if(d.alternatives.length > 0) {
+                        text += '<br>';
+                        text += 'Used words:';
+                        text += '<br>';
+                        text += d.alternatives.join(',<br>');
+                    }
+                    return text;
+                })
                     .style("left", (d3.event.pageX) + "px")
+                    .style('width', function() {
+                        let length = 12;
+                        d.alternatives.forEach((alternative) => {
+                            length = Math.max(length, alternative.length)
+                        })
+                        return length * 8 + 'px';
+                    })
+                    .style('height', (d.alternatives.length + 2) * 14 + 'px')
                     .style("top", (d3.event.pageY - 28) + "px");
                 })
             .on("mouseout", function(d) {
