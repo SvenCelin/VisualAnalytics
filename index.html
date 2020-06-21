@@ -54,15 +54,15 @@
             </div>
 
             User search:
-            <input list="userName" onchange="setUserName(this.value)" placeholder="input">
+            <input list="userName" onchange="setUserName(this.value)" placeholder="input" id="userNames">
             <datalist id="userName">
             </datalist>
 
             Date from:
-            <input type="date" min="2020-03-24" max="2020-04-08" onchange="setDateFrom(this.value)" value="2020-03-24">
+            <input type="date" id="dateFrom" min="2020-03-24" max="2020-04-08" onchange="setDateFrom(this.value)" value="2020-03-24">
 
             Date to:
-            <input type="date" min="2020-03-25" max="2020-04-09" onchange="setDateTo(this.value)" value="2020-04-09">
+            <input type="date" id="dateTo" min="2020-03-25" max="2020-04-09" onchange="setDateTo(this.value)" value="2020-04-09">
 
         </div>
 
@@ -84,7 +84,7 @@
                 </select>
             </div>
 
-            <div id="showCaseWrapper">
+            <div id="showCaseWrapper" style="margin-bottom: 4px;">
                 Used colors:
                 <div id="colorShowCase" style="height: 25px; width: 100%">
 
@@ -97,10 +97,10 @@
             </div>
 
             Minimum font size (20):
-            <input type="number" min="20" max="119" value="20" onchange="setMinFontSize(this.value)">
+            <input type="number" id="minFontSize" min="20" max="119" value="20" onchange="setMinFontSize(this.value)">
 
             Maximum font size (120):
-            <input type="number" min="25" max="120" value="80" onchange="setMaxFontSize(this.value)">
+            <input type="number" id="maxFontSize" min="25" max="120" value="80" onchange="setMaxFontSize(this.value)">
 
             Maximum tags (100):
             <input type="number" min="5" max="100" value="50" onchange="setMaxTags(this.value)">

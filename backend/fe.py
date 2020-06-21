@@ -108,6 +108,14 @@ def retrieve_user_names():
         result_array.append(user_name[0])
     return json.dumps(result_array)
 
+@app.route('/userNamesVerified')
+def retrieve_user_names_ver():
+    user_names = db.session.query(Tweet.user_name).filter(Tweet.verified == True).group_by(Tweet.user_name)
+    result_array = []
+    for user_name in user_names:
+        result_array.append(user_name[0])
+    return json.dumps(result_array)
+
 @app.route('/meta')
 def meta_info():
     tweet_count = db.session.execute(Tweet.query.statement.with_only_columns([func.count()]).order_by(None)).scalar()

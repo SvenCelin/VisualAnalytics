@@ -16,12 +16,12 @@ var query = {
 
 let customPaletteName = "Custom one color";
 let palettes = [
-    {name: "Pastel", colors:["#987284","#9dbf9e","#d0d6b5","#f9b5ac","#ee7674"]},
-    {name: "Blue gradient", colors:["#03045e","#0077b6","#00b4d8","#90e0ef","#caf0f8"]},
-    {name: "Pink/red/black", colors:["#ffd9da","#ea638c","#89023e","#30343f","#1b2021"]},
-    {name: "Blueish/yellow/red", colors:["#7fb7be","#d3f3ee","#dacc3e","#bc2c1a","#7d1538"]},
-    {name: "A lot of colors", colors:["#ffe74c","#ff5964","#ffffff","#6bf178","#35a7ff","#454545","#6ba292","#35ce8d","#69306d","#0e103d"]},
-    {name: customPaletteName, colors: []}
+    { name: "Pastel", colors: ["#987284", "#9dbf9e", "#d0d6b5", "#f9b5ac", "#ee7674"] },
+    { name: "Blue gradient", colors: ["#03045e", "#0077b6", "#00b4d8", "#90e0ef", "#caf0f8"] },
+    { name: "Pink/red/black", colors: ["#ffd9da", "#ea638c", "#89023e", "#30343f", "#1b2021"] },
+    { name: "Blueish/yellow/red", colors: ["#7fb7be", "#d3f3ee", "#dacc3e", "#bc2c1a", "#7d1538"] },
+    { name: "A lot of colors", colors: ["#ffe74c", "#ff5964", "#ffffff", "#6bf178", "#35a7ff", "#454545", "#6ba292", "#35ce8d", "#69306d", "#0e103d"] },
+    { name: customPaletteName, colors: [] }
 ]
 
 let config = {
@@ -32,8 +32,10 @@ let config = {
 function setUserType(value) {
     if (value == 1) {
         query.userType = true;
+        populateUserSearch();
     } else {
         query.userType = false;
+        populateUserSearch();
     }
 }
 
@@ -43,10 +45,14 @@ function setUserName(value) {
 }
 
 function setDateFrom(value) {
-    query.dateFrom = new Date(value).getTime() / 1000;
+    document.getElementById('dateTo').setAttribute("min", value);
+    query.dateFrom = new Date(value).getTime() / 1000;;
+
+
 }
 
 function setDateTo(value) {
+    document.getElementById("dateFrom").setAttribute("max", value);
     query.dateTo = new Date(value).getTime() / 1000;
 }
 
@@ -59,10 +65,18 @@ function setToCustomColor(value) {
 }
 
 function setMinFontSize(value) {
+    if (value >= query.maxFontSize){
+        value = query.maxFontSize - 1;
+        document.getElementById("minFontSize").value = value;
+    }
     query.mainFontSize = value;
 }
 
 function setMaxFontSize(value) {
+    if (value <= query.maxFontSize){
+        value = Math.max(query.minFontSize + 1, 25);
+        document.getElementById("maxFontSize").value = value;
+    }
     query.maxFontSize = value;
 }
 
@@ -89,14 +103,14 @@ function showMenu(menuChoice) {
     setupShowCase();
 }
 
-function getColorFromPalette(index, total){
-    if(config.chosenPalette.name === customPaletteName) {
+function getColorFromPalette(index, total) {
+    if (config.chosenPalette.name === customPaletteName) {
         return config.customColor;
     }
     let paletteToUse = palettes.find(value => value.name === config.chosenPalette.name);
     let relative = index / total;
     let colorCount = paletteToUse.colors.length;
-    let colorIndex = Math.floor(Math.min(relative * colorCount, colorCount -1));
+    let colorIndex = Math.floor(Math.min(relative * colorCount, colorCount - 1));
     return paletteToUse.colors[colorIndex];
 }
 
@@ -124,7 +138,7 @@ function fetchMeta(_callback) {
 }
 
 function setColorPallete(value) {
-    if(value === customPaletteName) {
+    if (value === customPaletteName) {
         showById('customColorContainer')
         hideById('showCaseWrapper')
         config.chosenPalette = palettes[palettes.length - 1]
@@ -175,7 +189,7 @@ function loadingBarStart() {
     document.getElementById("loadingIcon").style.display = "block";
     //todo: maybe use this later?
     //document.getElementById("loadingText").innerHTML =
-        "Looking through <b>" + query.loading.tweets + " tweets </b><br> with <b>" + query.loading.words + "</b> unique <b>words</b> <br>from <b>" + query.loading.userCount + " users.</b>";
+    "Looking through <b>" + query.loading.tweets + " tweets </b><br> with <b>" + query.loading.words + "</b> unique <b>words</b> <br>from <b>" + query.loading.userCount + " users.</b>";
 }
 
 function loadingBarSTOP() {
@@ -188,25 +202,25 @@ function fetchData(_callback) {
 
     var url = "http://127.0.0.1:5000/searchWords";
     let queryParams = [];
-    if(query.userName){
-       queryParams.push({name: 'user_name', value: query.userName});
+    if (query.userName) {
+        queryParams.push({ name: 'user_name', value: query.userName });
     }
-    if(query.userType == true){
-        queryParams.push({name: 'verified', value: 'true'});
+    if (query.userType == true) {
+        queryParams.push({ name: 'verified', value: 'true' });
     }
-    if(query.dateFrom){
-        queryParams.push({name: 'from', value: query.dateFrom});
+    if (query.dateFrom) {
+        queryParams.push({ name: 'from', value: query.dateFrom });
     }
-    if(query.dateTo) {
-        queryParams.push({name: 'to', value: query.dateTo});
+    if (query.dateTo) {
+        queryParams.push({ name: 'to', value: query.dateTo });
     }
-    if(query.maxTags) {
-        queryParams.push({name: 'maxCount', value: query.maxTags});
+    if (query.maxTags) {
+        queryParams.push({ name: 'maxCount', value: query.maxTags });
     }
-    if(queryParams.length > 0) {
+    if (queryParams.length > 0) {
         url += '?';
     }
-    url += queryParams.map(value => value.name +'=' + value.value).join('&');
+    url += queryParams.map(value => value.name + '=' + value.value).join('&');
     console.log(url);
     var request = new XMLHttpRequest()
     request.open('GET', url);
@@ -230,8 +244,12 @@ function fetchData(_callback) {
     console.log(query.words);
 }
 
-function populateUserSearch(){
-    var url = "http://127.0.0.1:5000/userNames";
+function populateUserSearch() {
+    if (query.userType) {
+        var url = "http://127.0.0.1:5000/userNamesVerified";
+    } else {
+        var url = "http://127.0.0.1:5000/userNames";
+    }
     var request = new XMLHttpRequest()
     request.open('GET', url);
     request.responseType = 'text';
@@ -242,12 +260,14 @@ function populateUserSearch(){
 
         var options = '';
 
-        for(var i = 0; i < names.length; i++)
-          options += '<option value="'+names[i]+'" />';
-      
+        for (var i = 0; i < names.length; i++)
+            options += '<option value="' + names[i] + '" />';
+
+        document.getElementById('userNames').value = '';
         document.getElementById('userName').innerHTML = options;
     };
 }
-document.addEventListener('DOMContentLoaded', function() {
+
+document.addEventListener('DOMContentLoaded', function () {
     loadPalettes();
 });
