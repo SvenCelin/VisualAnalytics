@@ -91,11 +91,17 @@ function setRotation(value) {
 function showMenu(menuChoice) {
     var menu1 = document.getElementById("dataFilters");
     var menu2 = document.getElementById("visualisation");
+    var button1 = document.getElementById("menuOption")
+    var button2 = document.getElementById("menuOption2")
 
     if (menuChoice == "dataFilters") {
+        button1.style.background = "#76b4ff"
+        button2.style.background = "#415a79"
         menu1.style.display = "block";
         menu2.style.display = "none";
     } else {
+        button1.style.background = "#415a79"
+        button2.style.background = "#76b4ff"
         menu1.style.display = "none";
         menu2.style.display = "block";
     }
