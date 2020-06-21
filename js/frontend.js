@@ -59,7 +59,7 @@ function setToCustomColor(value) {
 }
 
 function setMinFontSize(value) {
-    query.mainFontSize = value;
+    query.minFontSize = value;
 }
 
 function setMaxFontSize(value) {
