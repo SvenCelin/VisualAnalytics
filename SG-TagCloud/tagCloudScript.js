@@ -3,6 +3,10 @@ function drawTagCloud() {
     // List of words
 
     var myWords = query.words;
+    if (!myWords.length){
+        document.getElementById("loadingIcon").innerHTML = "No available data for this time period";
+        return;   
+    }
 
     var minFontSize = query.minFontSize;
     var maxFontSize = query.maxFontSize;

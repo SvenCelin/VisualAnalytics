@@ -123,6 +123,7 @@ function generate() {
     document.getElementById("generateButton").innerHTML = "Loading";
 
     document.getElementById("my_dataviz").innerHTML = "";
+    document.getElementById("loadingIcon").innerHTML = "<div class='sk-folding-cube'><div class='sk-cube1 sk-cube'></div><div class='sk-cube2 sk-cube'></div><div class='sk-cube4 sk-cube'></div><div class='sk-cube3 sk-cube'></div></div>";
 
     fetchMeta(loadingBarStart);
     fetchData(drawTagCloud);
@@ -243,12 +244,6 @@ function fetchData(_callback) {
         })
         query.words = listOfObjects;
 
-        //this if isn't doing it's job
-        if (query.words.length == 0){
-            console.log("so here it notices the array is empmty");
-            loadingBarSTOP();
-            return;   
-        }
 
         loadingBarSTOP();
         _callback();
