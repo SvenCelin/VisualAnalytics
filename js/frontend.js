@@ -2,8 +2,8 @@
 var query = {
     userType: false, //true means Verified, false means all
     userName: undefined, //array of selected user names, or just one username for now?
-    dateFrom: undefined, //unix time TODO
-    dateTo: undefined, //CHANGE THIS!
+    dateFrom: 1585008000,
+    dateTo: 1586390400,
     minFontSize: 20,
     maxFontSize: 80,
     maxTags: 50,
@@ -46,14 +46,13 @@ function setUserName(value) {
 
 function setDateFrom(value) {
     document.getElementById('dateTo').setAttribute("min", value);
-    query.dateFrom = new Date(value).getTime() / 1000;;
-
-
+    query.dateFrom = new Date(value).getTime() / 1000;
 }
 
 function setDateTo(value) {
     document.getElementById("dateFrom").setAttribute("max", value);
     query.dateTo = new Date(value).getTime() / 1000;
+    console.log(query.dateTo);
 }
 
 function setFont(value) {
@@ -65,7 +64,7 @@ function setToCustomColor(value) {
 }
 
 function setMinFontSize(value) {
-    if (value >= query.maxFontSize){
+    if (value >= query.maxFontSize) {
         value = query.maxFontSize - 1;
         document.getElementById("minFontSize").value = value;
     }
@@ -73,7 +72,7 @@ function setMinFontSize(value) {
 }
 
 function setMaxFontSize(value) {
-    if (value <= query.maxFontSize){
+    if (value <= query.maxFontSize) {
         value = Math.max(query.minFontSize + 1, 25);
         document.getElementById("maxFontSize").value = value;
     }
@@ -237,6 +236,14 @@ function fetchData(_callback) {
             listOfObjects.push(singleObj);
         })
         query.words = listOfObjects;
+
+        //this if isn't doing it's job
+        if (query.words.length == 0){
+            console.log("so here it notices the array is empmty");
+            loadingBarSTOP();
+            return;   
+        }
+
         loadingBarSTOP();
         _callback();
     };
@@ -271,3 +278,38 @@ function populateUserSearch() {
 document.addEventListener('DOMContentLoaded', function () {
     loadPalettes();
 });
+
+var dayPerDay_flag = true;
+function dayPerDay() {
+    if (dayPerDay_flag) {
+        dayPerDay_flag = false;
+        document.getElementById("oneDay").innerHTML = "Show date range";
+        hideById("dateRange");
+        showById("dayPerDay");
+        document.getElementById("dayPerDayDate").innerHTML = new Date(query.dateFrom * 1000);
+        query.dateTo = query.dateFrom + 86400;
+    } else {
+        dayPerDay_flag = true;
+        document.getElementById("oneDay").innerHTML = "Show day by day";
+        hideById("dayPerDay");
+        showById("dateRange");
+        setDateFrom(document.getElementById("dateFrom").value);
+        setDateTo(query.dateTo = document.getElementById("dateTo").value);
+    }
+}
+
+function dayBefore() {
+    if (query.dateFrom > 1585008000) {
+        query.dateFrom -= 86400;
+        query.dateTo -= 86400;
+        document.getElementById("dayPerDayDate").innerHTML = new Date(query.dateFrom * 1000);
+    }
+}
+
+function dayAfter() {
+    if (query.dateTo < 1586390400) {
+        query.dateFrom += 86400;
+        query.dateTo += 86400;
+        document.getElementById("dayPerDayDate").innerHTML = new Date(query.dateFrom * 1000);
+    }
+}

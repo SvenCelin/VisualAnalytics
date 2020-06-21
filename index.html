@@ -58,11 +58,21 @@
             <datalist id="userName">
             </datalist>
 
-            Date from:
-            <input type="date" id="dateFrom" min="2020-03-24" max="2020-04-08" onchange="setDateFrom(this.value)" value="2020-03-24">
+            <div id="dateRange">
+                Date from:
+                <input type="date" id="dateFrom" min="2020-03-24" max="2020-04-08" onchange="setDateFrom(this.value)"
+                    value="2020-03-24">
 
-            Date to:
-            <input type="date" id="dateTo" min="2020-03-25" max="2020-04-09" onchange="setDateTo(this.value)" value="2020-04-09">
+                Date to:
+                <input type="date" id="dateTo" min="2020-03-25" max="2020-04-09" onchange="setDateTo(this.value)"
+                    value="2020-04-09">
+            </div>
+            <button id="oneDay" onclick="dayPerDay()">Show day by day</button>
+            <div id="dayPerDay" style="display: none;">
+                <button class="dayPerDayS" onclick="dayBefore()">-</button>
+                <div class="dayPerDayS" style="border-style: solid; overflow: hidden;" id="dayPerDayDate">2020-03-24</div>
+                <button class="dayPerDayS" onclick="dayAfter()">+</button>
+            </div>
 
         </div>
 
@@ -71,9 +81,9 @@
             <div class="dropdown">
                 <select class="dropdown-select" onchange="setFont(value)">
                     <option value="Impact">Impact</option>
-                    <option value="Helvetica">Helvetica</option> 
-                    <option value="Courier">Courier</option> 
-                    <option value="Comic Sans MS">Comic Sans MS</option> 
+                    <option value="Helvetica">Helvetica</option>
+                    <option value="Courier">Courier</option>
+                    <option value="Comic Sans MS">Comic Sans MS</option>
                     <!-- add fonts here-->
                 </select>
             </div>
@@ -115,8 +125,10 @@
     <div class="controlDiv" style="margin-top: 20px;">
         Dataset contains <b>42796 tweets</b><br>
         with <b>40554</b> unique <b>words</b><br>
-        from <b>143 users</b>. <br><b><a target="_blank"  href="https://en.wikipedia.org/wiki/Stop_words">Stopwords</a></b> were
-        removed, the displayed words were <b><a target="_blank" href="https://en.wikipedia.org/wiki/Stemming">stemmed</a></b> and only a-z is allowed.
+        from <b>143 users</b>. <br><b><a target="_blank"
+                href="https://en.wikipedia.org/wiki/Stop_words">Stopwords</a></b> were
+        removed, the displayed words were <b><a target="_blank"
+                href="https://en.wikipedia.org/wiki/Stemming">stemmed</a></b> and only a-z is allowed.
     </div>
     <div id="loadingIcon" style="display:none;">
         <div class="sk-folding-cube">
