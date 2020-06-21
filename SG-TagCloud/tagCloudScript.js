@@ -4,7 +4,7 @@ function drawTagCloud() {
 
     var myWords = query.words;
     if (!myWords.length){
-        document.getElementById("loadingIcon").innerHTML = "No available data for this time period";
+        document.getElementById("loadingIcon").innerHTML = "No available data for this selection";
         return;   
     }
 
