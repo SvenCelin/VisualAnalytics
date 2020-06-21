@@ -69,7 +69,7 @@ function setMinFontSize(value) {
         value = query.maxFontSize - 1;
         document.getElementById("minFontSize").value = value;
     }
-    query.mainFontSize = value;
+    query.minFontSize = value;
 }
 
 function setMaxFontSize(value) {
