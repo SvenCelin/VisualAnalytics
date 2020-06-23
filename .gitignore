@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 
 .idea
+*.json
+va_localhost-2020_06_09_14_23_44-dump.sql
+va_localhost-2020_06_19_19_12_45-dump.sql

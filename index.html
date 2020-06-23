@@ -14,29 +14,34 @@
     <!-- Load d3.js -->
     <script src="https://d3js.org/d3.v4.js"></script>
 
+
+
     <!-- Load d3-cloud -->
     <!--<script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script> -->
+
     <script type="text/javascript" src="SG-TagCloud/actualTagCloud.js"></script>
     <script type="text/javascript" src="SG-TagCloud/tagCloudScript.js"></script>
 
 </head>
 
-<body>
+<body onload="populateUserSearch()">
     <script src="js/frontend.js"></script>
+
+
 
     <!-- include your tag cloud script here or move frontend into your function -->
 
-    <div id="title">Visual Analytics</div>
+    <div id="title">Visual Analytics - tag cloud</div>
     <!-- div for TAG CLOUD-->
     <!-- change parent values of the div in css -->
     <div id="my_dataviz" class="cloudDiv"></div>
-    <script src="SG-TagCloud/tagCloudScript.js"></script>
 
+    <script src="SG-TagCloud/tagCloudScript.js"></script>
 
     <div class="controlDiv">
 
-        <button id="menuOption" onclick="showMenu('dataFilters')">Data Filters</button>
-        <button id="menuOption" onclick="showMenu('visualisation')">Visualisation</button>
+        <button id="menuOption" style="background: #76b4ff" class="menuOption" onclick="showMenu('dataFilters')">Data Filters</button>
+        <button id="menuOption2" class="menuOption" onclick="showMenu('visualisation')">Visualisation</button>
 
         <div class="menuBlock" id="dataFilters">
 
@@ -49,13 +54,25 @@
             </div>
 
             User search:
-            <input type="text" placeholder="input" value="" onchange="setUserName(this.value)">
+            <input list="userName" onchange="setUserName(this.value)" placeholder="input" id="userNames">
+            <datalist id="userName">
+            </datalist>
 
-            Date from:
-            <input type="date" min="2020-01-01" max="2020-01-05" onchange="setDateFrom(this.value)" value="2020-01-01">
+            <div id="dateRange">
+                Date from:
+                <input type="date" id="dateFrom" min="2020-03-24" max="2020-04-08" onchange="setDateFrom(this.value)"
+                    value="2020-03-24">
 
-            Date to:
-            <input type="date" min="2020-01-01" max="2020-01-05" onchange="setDateTo(this.value)" value="2020-01-05">
+                Date to:
+                <input type="date" id="dateTo" min="2020-03-25" max="2020-04-09" onchange="setDateTo(this.value)"
+                    value="2020-04-09">
+            </div>
+            <button id="oneDay" onclick="dayPerDay()">Show day by day</button>
+            <div id="dayPerDay" style="display: none;">
+                <button class="dayPerDayS" onclick="dayBefore()">-</button>
+                <div class="dayPerDayS" style="border-style: solid; overflow: hidden;" id="dayPerDayDate">2020-03-24</div>
+                <button class="dayPerDayS" onclick="dayAfter()">+</button>
+            </div>
 
         </div>
 
@@ -64,23 +81,36 @@
             <div class="dropdown">
                 <select class="dropdown-select" onchange="setFont(value)">
                     <option value="Impact">Impact</option>
-                    <option value="font2">font 2</option> <!-- add fonts here-->
+                    <option value="Helvetica">Helvetica</option>
+                    <option value="Courier">Courier</option>
+                    <option value="Comic Sans MS">Comic Sans MS</option>
+                    <!-- add fonts here-->
                 </select>
             </div>
 
             Color pallete:
-            <input type="color" value="#696969" onchange="setColor(this.value)">
-            <!--
             <div class="dropdown">
-                <select class="dropdown-select" onchange="setColorPallete(value)">
-                    <option value="pallete1">Pallete 1</option>
-                    <option value="pallete2">Pallete 2</option>
+                <select class="dropdown-select" id="paletteDropDown" onchange="setColorPallete(value)">
                 </select>
             </div>
-            -->
 
-            Maximum font size (5 - 30):
-            <input type="number" min="5" max="30" value="25" onchange="setMaxFontSize(this.value)">
+            <div id="showCaseWrapper" style="margin-bottom: 4px;">
+                Used colors:
+                <div id="colorShowCase" style="height: 25px; width: 100%">
+
+                </div>
+            </div>
+
+            <div id="customColorContainer">
+                Custom:
+                <input type="color" value="#696969" onchange="setToCustomColor(this.value)">
+            </div>
+
+            Minimum font size (20):
+            <input type="number" id="minFontSize" min="20" max="119" value="20" onchange="setMinFontSize(this.value)">
+
+            Maximum font size (120):
+            <input type="number" id="maxFontSize" min="25" max="120" value="80" onchange="setMaxFontSize(this.value)">
 
             Maximum tags (100):
             <input type="number" min="5" max="100" value="50" onchange="setMaxTags(this.value)">
@@ -90,6 +120,23 @@
 
         </div>
         <button id="generateButton" onclick="generate()">Generate</button>
+
+    </div>
+    <div class="controlDiv" style="margin-top: 20px;">
+        Dataset contains <b>42796 tweets</b><br>
+        with <b>40554</b> unique <b>words</b><br>
+        from <b>143 users</b>. <br><b><a target="_blank"
+                href="https://en.wikipedia.org/wiki/Stop_words">Stopwords</a></b> were
+        removed, the displayed words were <b><a target="_blank"
+                href="https://en.wikipedia.org/wiki/Stemming">stemmed</a></b> and only a-z is allowed.
+    </div>
+    <div id="loadingIcon" style="display:none;">
+        <div class="sk-folding-cube">
+            <div class="sk-cube1 sk-cube"></div>
+            <div class="sk-cube2 sk-cube"></div>
+            <div class="sk-cube4 sk-cube"></div>
+            <div class="sk-cube3 sk-cube"></div>
+        </div>
     </div>
 </body>
 
